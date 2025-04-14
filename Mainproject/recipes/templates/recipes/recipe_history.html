@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="content-area">
+        <h2 class="mb-4 text-center">📜 Your Recipe History</h2>
+
+        {% if history %}
+            <div class="recipe-history-list">
+                {% for entry in history %}
+                    <div class="recipe-history-item">
+                        <div class="history-content">
+                            <h4 class="recipe-name">{{ entry.recipe.name }}</h4>
+                            <div class="history-date">
+                                <span class="date-icon">📅</span> 
+                                <span>Made on: <strong>{{ entry.made_on }}</strong></span>
+                            </div>
+                        </div>
+                        <div class="history-actions">
+                            <a href="{% url 'recipe_detail' entry.recipe.id %}" class="btn btn-outline-primary">
+                                <span>👀</span> View Recipe
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-history-alert">
+                <div class="alert-icon">🚫</div>
+                <h4>No recipes marked as made yet</h4>
+                <p>Start cooking and track your recipe history! 🍳</p>
+            </div>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="{% url 'recipe_list' %}" class="btn btn-primary">
+                <span>🔙</span> Back to Recipes
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .content-area {
+        background-color: white;
+        border-radius: var(--border-radius);
+        padding: 40px;
+        box-shadow: var(--box-shadow);
+        margin-bottom: 40px;
+    }
+    
+    h2 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 30px;
+    }
+    
+    .recipe-history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .recipe-history-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: var(--light);
+        border-radius: var(--border-radius);
+        border-left: 5px solid var(--primary);
+        transition: all 0.3s;
+    }
+    
+    .recipe-history-item:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--box-shadow);
+    }
+    
+    .history-content {
+        flex: 1;
+    }
+    
+    .recipe-name {
+        font-family: 'Montserrat', 'Segoe UI', sans-serif;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--text-dark);
+        font-size: 1.2rem;
+    }
+    
+    .history-date {
+        color: #6c757d;
+        font-family: 'Georgia', serif;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .date-icon {
+        margin-right: 5px;
+    }
+    
+    .history-actions .btn {
+        padding: 8px 18px;
+        border-radius: 30px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        font-family: 'Montserrat', 'Segoe UI', sans-serif;
+    }
+    
+    .history-actions .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .history-actions .btn span {
+        margin-right: 5px;
+    }
+    
+    .empty-history-alert {
+        background-color: rgba(241, 196, 15, 0.1);
+        border: 1px solid rgba(241, 196, 15, 0.3);
+        border-radius: var(--border-radius);
+        padding: 40px 20px;
+        text-align: center;
+        color: #856404;
+    }
+    
+    .empty-history-alert .alert-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .empty-history-alert h4 {
+        font-family: 'Montserrat', 'Segoe UI', sans-serif;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+    }
+    
+    .empty-history-alert p {
+        font-family: 'Georgia', serif;
+        font-size: 1.1rem;
+        color: #6c757d;
+    }
+    
+    /* Back button */
+    .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        padding: 10px 22px;
+        border-radius: 30px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        font-family: 'Montserrat', 'Segoe UI', sans-serif;
+    }
+    
+    .btn-primary:hover {
+        background-color: #662d91; /* Darker shade of primary */
+        border-color: #662d91;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .btn-primary span {
+        margin-right: 8px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .recipe-history-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .history-actions {
+            width: 100%;
+        }
+        
+        .history-actions .btn {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .content-area {
+            padding: 30px 20px;
+        }
+    }
+</style>
+{% endblock %}

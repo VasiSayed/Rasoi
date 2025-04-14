@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Title Section -->
+    <div class="content-area mb-4">
+        <h2 class="mb-4 text-center" style="color: var(--primary);">Today's Suggested Recipe</h2>
+        
+        {% if recipe %}
+            <div class="row">
+                <!-- Recipe Image -->
+                <div class="col-md-5 mb-4 mb-md-0">
+                    {% if recipe.image %}
+                        <img src="{{ recipe.image.url }}" class="img-fluid rounded" alt="{{ recipe.name }}" style="box-shadow: var(--box-shadow);">
+                    {% else %}
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 300px; box-shadow: var(--box-shadow);">
+                            <span class="text-muted">No image available</span>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Recipe Details -->
+                <div class="col-md-7">
+                    <h3 style="font-family: 'Playfair Display', Georgia, serif; color: var(--primary);">{{ recipe.name }}</h3>
+                    
+                    <div class="my-4">
+                        <h5 style="font-family: 'Montserrat', sans-serif;">Description</h5>
+                        <p>{{ recipe.description }}</p>
+                    </div>
+                    
+                    <div class="my-4">
+                        <h5 style="font-family: 'Montserrat', sans-serif;">Ingredients</h5>
+                        <p>{{ recipe.ingredients }}</p>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap mt-4">
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary me-3 mb-3">
+                            View Full Recipe
+                        </a>
+                        
+                        {% if recipe.source_link %}
+                            <a href="{{ recipe.source_link }}" target="_blank" class="btn btn-outline-primary me-3 mb-3">
+                                View Source
+                            </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'recipe_list' %}" class="btn btn-outline-primary mb-3">
+                            Browse All Recipes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <div class="feature-icon mx-auto mb-4">
+                    <i class="bi bi-hourglass-split" style="font-size: 2rem;"></i>
+                </div>
+                <h4 style="color: var(--text-dark);">You've explored all our recipes!</h4>
+                <p class="text-muted mb-4">You have made all available recipes in the last 5 days. Check back later for more culinary inspiration!</p>
+                <a href="{% url 'recipe_list' %}" class="btn btn-primary">Browse All Recipes</a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Recommended Section (only shown when there's a recipe) -->
+    {% if recipe %}
+        <div class="content-area">
+            <h4 class="mb-4" style="color: var(--primary);">You Might Also Like</h4>
+            
+            <div class="row">
+                {% for related in related_recipes|slice:":3" %}
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card h-100">
+                            {% if related.image %}
+                                <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.name }}" style="height: 180px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: var(--primary);">{{ related.name }}</h5>
+                                <p class="card-text text-muted">{{ related.description|truncatechars:100 }}</p>
+                                <a href="{% url 'recipe_detail' related.id %}" class="btn btn-outline-primary btn-sm">View Recipe</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <p class="text-muted text-center">No related recipes found.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block style %}
+<style>
+    .bi {
+        display: inline-block;
+        vertical-align: -0.125em;
+    }
+    
+    .bi-hourglass-split::before {
+        content: "⌛";
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Rasoi - All Recipes{% endblock %}
+
+{% block content %}
+<div class="content-area">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0"><i class="fas fa-book-open me-2"></i>Recipe Collection</h2>
+        <a href="{% url 'recipe_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Add New Recipe
+        </a>
+    </div>
+
+    <p class="text-muted mb-4">Browse through your personal collection of delicious recipes.</p>
+
+    {% if recipes %}
+        <div class="recipe-list">
+            {% for recipe in recipes %}
+                <div class="recipe-card">
+                    <div class="recipe-info">
+                        <h4 class="recipe-title">{{ recipe.name }}</h4>
+                        <p class="recipe-author">by {{ recipe.user.username }}</p>
+                        
+                        <div class="recipe-tags">
+                            {% if recipe.Mode == "V" %}
+                                <span class="tag tag-veg">
+                                    <i class="fas fa-leaf me-1"></i> Vegetarian
+                                </span>
+                            {% else %}
+                                <span class="tag tag-nonveg">
+                                    <i class="fas fa-drumstick-bite me-1"></i> Non-Vegetarian
+                                </span>
+                            {% endif %}
+                            
+                            {% if recipe.category == "B" %}
+                                <span class="tag tag-breakfast">
+                                    <i class="fas fa-coffee me-1"></i> Breakfast
+                                </span>
+                            {% elif recipe.category == "L" %}
+                                <span class="tag tag-lunch">
+                                    <i class="fas fa-hamburger me-1"></i> Lunch
+                                </span>
+                            {% elif recipe.category == "D" %}
+                                <span class="tag tag-dinner">
+                                    <i class="fas fa-utensils me-1"></i> Dinner
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="recipe-actions">
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i> View
+                        </a>
+                        {% if recipe.user == request.user %}
+                            <a href="{% url 'recipe_edit' recipe.id %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </a>
+                            <a href="{% url 'recipe_delete' recipe.id %}" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash-alt me-1"></i> Delete
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h3>No Recipes Found</h3>
+            <p>Start your culinary journey by adding your first recipe.</p>
+            <a href="{% url 'recipe_create' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-plus me-1"></i> Add Your First Recipe
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+{% block style %}
+<style>
+    .recipe-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .recipe-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        border-radius: var(--border-radius);
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .recipe-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .recipe-title {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.3rem;
+        margin-bottom: 5px;
+        color: var(--text-dark);
+    }
+    
+    .recipe-author {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+    
+    .recipe-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+    
+    .tag-veg {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #27ae60;
+    }
+    
+    .tag-nonveg {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: #c0392b;
+    }
+    
+    .tag-breakfast {
+        background-color: rgba(243, 156, 18, 0.1);
+        color: #d35400;
+    }
+    
+    .tag-lunch {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: #2980b9;
+    }
+    
+    .tag-dinner {
+        background-color: rgba(155, 89, 182, 0.1);
+        color: #8e44ad;
+    }
+    
+    .recipe-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: rgba(0,0,0,0.01);
+        border-radius: var(--border-radius);
+        border: 1px dashed rgba(0,0,0,0.1);
+    }
+    
+    .empty-state-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        background-color: rgba(125, 60, 152, 0.1);
+        border-radius: 50%;
+        margin-bottom: 20px;
+        font-size: 2rem;
+        color: var(--primary);
+    }
+    
+    .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+    }
+    
+    .empty-state p {
+        color: #6c757d;
+        margin-bottom: 20px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    @media (max-width: 768px) {
+        .recipe-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .recipe-actions {
+            align-self: flex-end;
+        }
+    }
+</style>
+{% endblock %}
+{% endblock %}
